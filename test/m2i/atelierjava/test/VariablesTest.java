@@ -117,5 +117,11 @@ public class VariablesTest {
             System.out.println("erreur");
         }*/
     }
+    
+    public int carre(int i) {
+        return i*i;
+    }
+    
+   
 
 }

@@ -5,11 +5,11 @@
  */
 package m2i.atelierjava.entite;
 
+import java.util.HashMap;
 import javax.sound.midi.Instrument;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Patch;
 import javax.sound.midi.Synthesizer;
 
 /**
@@ -21,6 +21,39 @@ public class Synthe {
     private boolean on;
     private String instrument;
     private int volume; // de 0 à 10
+    private Synthesizer synth;
+    private MidiChannel[] channels;
+    private Instrument[] instrus;
+    private HashMap<String, Integer> tNote = new HashMap<String, Integer>();
+
+    public Synthe() {
+        try {
+            initSynthe();
+        } catch (Exception e) {
+        }
+
+    }
+
+    public void initSynthe() throws MidiUnavailableException, InterruptedException {
+        this.synth = MidiSystem.getSynthesizer();
+        this.synth.open();
+        this.channels = this.synth.getChannels();
+        this.instrus = this.synth.getDefaultSoundbank().getInstruments();
+        this.synth.loadAllInstruments(this.synth.getDefaultSoundbank());
+
+        tNote.put("sol0", 55);
+        tNote.put("la0", 57);
+        tNote.put("si0", 59);
+        tNote.put("do", 60);
+        tNote.put("re", 62);
+        tNote.put("mi", 64);
+        tNote.put("fa", 65);
+        tNote.put("sol", 67);
+        tNote.put("la", 69);
+        tNote.put("si", 71);
+        tNote.put("do2", 72);
+
+    }
 
     public void boutonOnOff() {
         if (on) {
@@ -32,9 +65,6 @@ public class Synthe {
         }
     }
 
-    public void eteindre() {
-        on = false;
-    }
 
     public void jouerNote(String note) {
         if (on) {
@@ -42,7 +72,6 @@ public class Synthe {
             try {
                 this.son();
             } catch (Exception e) {
-
             }
 
         }
@@ -56,10 +85,20 @@ public class Synthe {
         canal = syn.getChannels()[0];
         canal.programChange(0);
         canal.noteOn(60, 100);
-        canal.noteOff(60);
-        
-        
-        
+        canal.noteOff(60, 100);
+    }
+
+    public void sound(int channel, String notxt, int instrument, int duree, int bazar)
+            throws MidiUnavailableException, InterruptedException {
+        int note;
+        note = tNote.get(notxt);
+        //System.out.println(note);
+        channels[channel].programChange(instrument);
+        channels[channel].noteOn(note, bazar);
+        //channels[channel].noteOff(note, bazar);
+        Thread.sleep(duree);
+    }
+
 //        Synthesizer synth = MidiSystem.getSynthesizer();
 //        synth.open();
 //        MidiChannel[] chan = synth.getChannels();
@@ -91,8 +130,6 @@ public class Synthe {
 //            }
 //
 //        }
-    }
-
     public boolean isOn() {
         return on;
     }
