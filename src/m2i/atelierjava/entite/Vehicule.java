@@ -5,8 +5,6 @@
  */
 package m2i.atelierjava.entite;
 
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
-
 /**
  *
  * @author Formation
